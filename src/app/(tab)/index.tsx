@@ -1,10 +1,11 @@
 import { BANNERS, dummyProducts } from '@/assets/assets'
 import { useRouter } from 'expo-router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ActivityIndicator, Dimensions, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CategoryItem from '../../../components/CategoryItem'
 import Header from '../../../components/Header'
+import ProductCard from '../../../components/ProductCard'
 import { CATEGORIES } from '../../../constants'
 import { Product } from '../../../constants/types'
 
@@ -17,10 +18,15 @@ export default function Home() {
   const [ loading, setLoading ] = useState(true)
   const categories = [{id: 'all', name: 'All', icon: "grid"}, ...CATEGORIES]
 
+  useEffect(() => {
+    fetchProducts()
+  }, [])
+
   const fetchProducts = async () => {
     setProducts(dummyProducts)
     setLoading(false)
   }
+
 
   return (
     <SafeAreaView className='flex-1' edges={['top']}>
@@ -70,7 +76,7 @@ export default function Home() {
 
         {/* Categories */}
         <View className='mt-4'>
-          <View className='flex-row justify-between items-center mb-4'>
+          <View className='flex-row justify-between items-center mb-2'>
             <Text className='text-xl font-bold'>Categories</Text>
           </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -85,11 +91,12 @@ export default function Home() {
                 })} 
                 />
             ))}
+            
           </ScrollView>
         </View>
 
         {/* popular products */}
-        <View className='mt-12'>
+        <View className='mt-6'>
           <View className='flex-row justify-between items-center mb-4'>
             <Text className='text-xl font-bold'>Popular</Text>
             <TouchableOpacity onPress={() => router.push('/shop')}>
@@ -99,13 +106,25 @@ export default function Home() {
           {loading ? (
             <ActivityIndicator size="large"/>
           ):(
-            <View>
+            <View className='flex-row flex-wrap justify-between'>
               {/* Popular products content */}
               {products.slice(0, 4).map((product)=> (
-                <Text key={product._id}>{product.name}</Text>
+                <ProductCard key={product._id} product={product} />
               ))}
             </View>
-          )}
+           )}
+        </View>
+
+        {/* Newsletter */}
+        <View className='bg-gray-100 p-6 rounded-2xl mb-20 items-center'>
+          <Text className='text-2xl font-bold text-gray-800 mb-2 text-center'>
+            Subscribe to our newsletter
+          </Text>
+          <Text className='text-secondary text-center 
+          mb-4'>Subscribe to our newsletter and get the latest updates and offers.</Text>
+        <TouchableOpacity className='bg-black/90 w-4/5 py-3 rounded-full items-center'>
+          <Text className='text-white font-medium text-base'>Subscribe Now</Text>
+        </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
