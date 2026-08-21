@@ -2,11 +2,13 @@ import { Ionicons } from '@expo/vector-icons'
 import { Link } from 'expo-router'
 import { Image, Text, TouchableOpacity, View } from 'react-native'
 import { ProductCardProps } from '../constants/types'
+import { useWishlist } from '../context/WishlistContext'
 
 export default function ProductCard({ product }: ProductCardProps) {
   // Safe fallback if images array is empty or undefined
   const imageUrl = product.images?.[0] || 'https://via.placeholder.com/300'
-  const isLiked = false // Placeholder for like state; replace with actual logic as needed
+  const { isInWishlist, toggleWishlist } = useWishlist()
+  const isLiked = isInWishlist(product._id)
 
   return (
     <Link href={`/product/${product._id}`} asChild>
@@ -22,7 +24,8 @@ export default function ProductCard({ product }: ProductCardProps) {
             resizeMode="cover" 
           />
           {/* favorite button */}
-          <TouchableOpacity className="absolute top-2 right-2 z-10 p-2 bg-white rounded-full shadow-sm">
+          <TouchableOpacity className="absolute top-2 right-2 z-10 p-2 bg-white rounded-full shadow-sm"
+            onPress={(e)=>{e.stopPropagation(); toggleWishlist(product)}}>
           <Ionicons name={isLiked ? 'heart' : 'heart-outline'} size={20} color={isLiked ? 'COLORS.accent' : 'COLORS.primary'} />
           </TouchableOpacity>
 
